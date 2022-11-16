@@ -32,6 +32,19 @@ const questions = [
         }
     },
     
+    {
+        type: 'input',
+        name: 'title',
+        message: 'Enter the title of your project',
+        validate: titleInput => {
+            if (titleInput) {
+                return true;
+            } else {
+                console.log('Every project must have an interesting title. Try Again!');
+                return false;
+            }
+        }
+    }
 ];
 
 
