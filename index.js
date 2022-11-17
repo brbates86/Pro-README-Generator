@@ -44,15 +44,108 @@ const questions = [
                 return false;
             }
         }
+    },
+    {
+        type: 'input',
+        name: 'email',
+        message: 'Enter your email address:',
+        validate: emailInput => {
+            if (emailInput) {
+                return true;
+            } else {
+                console.log('Please enter an email address for questions regarding your work!');
+                return false;
+            }
+        }
+
+    },
+    {
+        type: 'input',
+        name: 'description',
+        message: "Enter your project description here:",
+        validate: descriptionInput => {
+            if (descriptionInput) {
+                return true;
+            } else {
+                console.log('It is essential to provide a description of your project..');
+                return false;
+            }
+        }
+    },
+    {
+        type: 'input',
+        name: 'installation',
+        message: 'Instructions for installation',
+        validate: installationInput => {
+            if (installationInput) {
+                return true;
+            } else {
+                console.log('Provide instructions for installation');
+                return false;
+            }
+        }
+    },
+    {
+        type: 'input',
+        name: 'usage',
+        message: 'usage Instructions:',
+        validate: usageInput => {
+            if (usageInput) {
+                return true;
+            } else {
+                console.log('Provide instructions for usage.');
+                return false;
+            }
+        }
+    },
+    {
+        type: 'confirm',
+        name: 'confirmLicenses',
+        message: 'What license would you like to include?',
+        choices: ['MIT, GPL'],
+        when: ({confirmLicenses}) => {
+            if (confirmLicenses) {
+                return true;
+            } else {
+                return false;
+            }
+        }
     }
 ];
 
 
 // TODO: Create a function to write README file
-function writeToFile(fileName, data) {}
+function writeToFile(fileName, data) {
+    return new Promise((resolve, reject) => {
+        fs.writeFile('./dist/README.md', data, err => {
+            // will reject the promise and send the err to .catch() method
+            if (err) {
+                reject (err);
+                // will return out of the finction to make sure the promise doesnt continue to execute
+                return;
+            }
+            //resolve promise and send successful data to the .then() method
+            resolve({
+                ok:true,
+                message: console.log('Your README is in the "dist" folder.')
+            });
+        })
+    })
+}
 
 // TODO: Create a function to initialize app
-function init() {}
+function init() {
+    return inquirer.createPromptModule(questions);
+}
 
 // Function call to initialize app
-init();
+init() 
+.then(userInput => {
+    return generateMarkdown(userInput);
+})
+.then(readmeInfo => {
+    return writeToFile(readmeInfo);
+})
+.catch(err => {
+    console.log(err);
+});
