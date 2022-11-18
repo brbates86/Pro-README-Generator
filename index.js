@@ -7,7 +7,7 @@ const questions = [
     {
         type: 'input',
         name: 'name',
-        method: 'Hello! Welcome to the Pro README Generator! To start, Please enter your full name:',
+        message: 'Hello! Welcome to the Pro README Generator! To start, Please enter your full name:',
         validate: nameInput => {
             if (nameInput) {
                 return true;
@@ -101,6 +101,12 @@ const questions = [
     {
         type: 'confirm',
         name: 'confirmLicenses',
+        message: 'Would you like to include a license?',
+        default: false
+    },
+    { 
+        type: 'list',
+        name: 'licenses',
         message: 'What license would you like to include?',
         choices: ['MIT, GPL'],
         when: ({confirmLicenses}) => {
@@ -115,7 +121,7 @@ const questions = [
 
 
 // TODO: Create a function to write README file
-function writeToFile(fileName, data) {
+const writeToFile = data => {
     return new Promise((resolve, reject) => {
         fs.writeFile('./dist/README.md', data, err => {
             // will reject the promise and send the err to .catch() method
@@ -134,13 +140,12 @@ function writeToFile(fileName, data) {
 }
 
 // TODO: Create a function to initialize app
-function init() {
-    return inquirer.createPromptModule(questions);
+const init = () => {
+    return inquirer.prompt(questions);
 }
-
 // Function call to initialize app
 init() 
-.then(userInput => {
+  .then(userInput => {
     return generateMarkdown(userInput);
 })
 .then(readmeInfo => {
@@ -148,4 +153,5 @@ init()
 })
 .catch(err => {
     console.log(err);
-});
+})
+
